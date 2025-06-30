@@ -13,26 +13,28 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0d1117;
             min-height: 100vh;
             padding: 20px;
+            color: #c9d1d9;
         }
         
         .container {
             max-width: 500px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
             padding: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
         }
         
         h1 {
             text-align: center;
-            color: #333;
+            color: #f0f6fc;
             margin-bottom: 30px;
             font-size: 24px;
+            font-weight: 600;
         }
         
         .form-group {
@@ -42,90 +44,91 @@
         label {
             display: block;
             margin-bottom: 8px;
-            color: #555;
-            font-weight: 600;
+            color: #f0f6fc;
+            font-weight: 500;
         }
         
         input, select {
             width: 100%;
             padding: 12px 16px;
-            border: 2px solid #e1e5e9;
-            border-radius: 10px;
+            border: 1px solid #30363d;
+            border-radius: 6px;
             font-size: 16px;
-            transition: all 0.3s ease;
-            background: white;
+            transition: all 0.2s ease;
+            background: #0d1117;
+            color: #c9d1d9;
         }
         
         input:focus, select:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
         }
         
         .readonly {
-            background: #f8f9fa;
-            color: #666;
+            background: #21262d;
+            color: #8b949e;
         }
         
         button {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #238636;
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 6px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             margin-top: 10px;
         }
         
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            background: #2ea043;
         }
         
         button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
+            background: #238636;
         }
         
         .loading {
             display: none;
             text-align: center;
-            color: #666;
+            color: #8b949e;
             margin-top: 10px;
         }
         
         .result {
             margin-top: 30px;
             padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
+            background: #21262d;
+            border-radius: 6px;
+            border: 1px solid #30363d;
             display: none;
         }
         
         .result h3 {
-            color: #333;
+            color: #f0f6fc;
             margin-bottom: 15px;
         }
         
         .copy-data {
-            background: white;
+            background: #0d1117;
+            color: #c9d1d9;
             padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            font-family: monospace;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
             margin-bottom: 15px;
             word-break: break-all;
+            font-size: 14px;
         }
         
         .copy-btn {
-            background: #28a745;
+            background: #58a6ff;
             width: auto;
             display: inline-block;
             padding: 8px 16px;
@@ -133,22 +136,23 @@
         }
         
         .copy-btn:hover {
-            background: #218838;
+            background: #79c0ff;
         }
         
         .error {
-            color: #dc3545;
+            color: #f85149;
             font-size: 14px;
             margin-top: 5px;
         }
         
         .exchange-rate-info {
-            background: #e7f3ff;
+            background: #0c2d6b;
+            border: 1px solid #1f6feb;
+            color: #79c0ff;
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 6px;
             margin-top: 10px;
             font-size: 14px;
-            color: #0066cc;
         }
     </style>
 </head>
@@ -185,7 +189,7 @@
             
             <div class="form-group">
                 <label for="cryptoCoin">Crypto Coin:</label>
-                <input type="text" id="cryptoCoin" name="cryptoCoin" placeholder="e.g., BTC, ETH, ADA" required>
+                <input type="text" id="cryptoCoin" name="cryptoCoin" placeholder="e.g., BTC, ETH, ADA" style="text-transform: uppercase;" required>
             </div>
             
             <button type="submit">Generate Sheet Data</button>
@@ -203,6 +207,11 @@
     <script>
         // Set today's date
         document.getElementById('date').value = new Date().toISOString().split('T')[0];
+        
+        // Auto-uppercase crypto coin input
+        document.getElementById('cryptoCoin').addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
         
         // Auto-calculate USD when GBP changes
         document.getElementById('gbpAmount').addEventListener('input', function() {
