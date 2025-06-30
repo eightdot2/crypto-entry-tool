@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Portfolio Data Entry</title>
+    <title>Grant's Crypto Portfolio Entry Tool</title>
     <style>
         * {
             margin: 0;
@@ -154,6 +154,10 @@
             margin-top: 10px;
             font-size: 14px;
         }
+        
+        .date-input {
+            color-scheme: dark;
+        }
     </style>
 </head>
 <body>
@@ -163,12 +167,12 @@
         <form id="dataForm">
             <div class="form-group">
                 <label for="date">Date:</label>
-                <input type="date" id="date" name="date" class="readonly" readonly>
+                <input type="date" id="date" name="date" class="date-input" required>
             </div>
             
             <div class="form-group">
                 <label for="exchange">Exchange:</label>
-                <input type="text" id="exchange" name="exchange" placeholder="e.g., Binance, Coinbase, Kraken" required>
+                <input type="text" id="exchange" name="exchange" placeholder="e.g., Binance, Coinbase, Kraken" value="Coinbase" required>
             </div>
             
             <div class="form-group">
@@ -230,12 +234,12 @@
             <h3>📋 Copy this data to your sheet:</h3>
             <div class="copy-data" id="copyData"></div>
             <button class="copy-btn" onclick="copyToClipboard()">📋 Copy to Clipboard</button>
-            <p><strong>Instructions:</strong> Select cells A4:F4 in your Google Sheet, paste the data, then insert a new row above to push this data to row 4.</p>
+            <p style="margin-top: 15px;"><strong>Instructions:</strong> Select cells A4:J4 in your Google Sheet, paste the data, then insert a new row above to push this data to row 4.</p>
         </div>
     </div>
 
     <script>
-        // Set today's date
+        // Set today's date as default
         document.getElementById('date').value = new Date().toISOString().split('T')[0];
         
         // Auto-uppercase crypto coin input and fetch price
@@ -304,7 +308,7 @@
                 if (data[coinId] && data[coinId].usd && data[coinId].gbp) {
                     const priceUSD = data[coinId].usd;
                     const priceGBP = data[coinId].gbp;
-                    document.getElementById('tokenPrice').value = `${priceUSD} / £${priceGBP}`;
+                    document.getElementById('tokenPrice').value = `$${priceUSD} / £${priceGBP}`;
                     
                     // Store USD price for calculations
                     document.getElementById('tokenPrice').dataset.usdPrice = priceUSD;
@@ -355,16 +359,6 @@
         }
         
         // Auto-calculate USD when net GBP changes
-        document.getElementById('gbpAmount').addEventListener('input', function() {
-            const gbpAmount = parseFloat(this.value);
-            if (gbpAmount && gbpAmount > 0) {
-                fetchExchangeRate(gbpAmount);
-            } else {
-                document.getElementById('usdAmount').value = '';
-                document.getElementById('exchangeRateInfo').style.display = 'none';
-            }
-        });
-        
         async function fetchExchangeRate(netGbp) {
             const loading = document.getElementById('loading');
             const usdInput = document.getElementById('usdAmount');
@@ -424,7 +418,7 @@
                 💰 Total GBP: £${gbpAmount}<br>
                 💸 Coinbase Fee: £${coinbaseFee} (${paymentMethod.replace('_', ' ')})<br>
                 💵 Net GBP: £${netGbp}<br>
-                💲 USD Received: ${usdAmount}<br>
+                💲 USD Received: $${usdAmount}<br>
                 🪙 ${cryptoCoin} Price: ${tokenPrice}<br>
                 📈 Tokens Received: ${tokensReceived} ${cryptoCoin}
             `;
@@ -453,7 +447,7 @@
                 
                 setTimeout(() => {
                     btn.textContent = originalText;
-                    btn.style.background = '#28a745';
+                    btn.style.background = '#58a6ff';
                 }, 2000);
             });
         }
