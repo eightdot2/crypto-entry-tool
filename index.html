@@ -173,7 +173,7 @@
             
             <div class="form-group">
                 <label for="bankSource">Bank Source:</label>
-                <input type="text" id="bankSource" name="bankSource" placeholder="e.g., Monzo, HSBC, Barclays" required>
+                <input type="text" id="bankSource" name="bankSource" placeholder="e.g., Monzo, HSBC, Barclays" value="First Direct (Paypal)" required>
             </div>
             
             <div class="form-group">
@@ -182,7 +182,7 @@
                     <option value="">Select payment method...</option>
                     <option value="debit_card">Debit Card (3.99% fee)</option>
                     <option value="bank_transfer">Bank Transfer (1.49% fee)</option>
-                    <option value="paypal">PayPal (£1.49 flat fee)</option>
+                    <option value="paypal" selected>PayPal (£1.49 flat fee)</option>
                 </select>
             </div>
             
@@ -213,8 +213,8 @@
             </div>
             
             <div class="form-group">
-                <label for="tokenPrice">Token Price (USD):</label>
-                <input type="number" id="tokenPrice" name="tokenPrice" placeholder="Auto-fetched..." step="0.000001" min="0" class="readonly" readonly>
+                <label for="tokenPrice">Token Price:</label>
+                <input type="text" id="tokenPrice" name="tokenPrice" placeholder="Auto-fetched..." class="readonly" readonly>
             </div>
             
             <div class="form-group">
@@ -297,13 +297,17 @@
         
         async function fetchTokenPrice(symbol) {
             try {
-                const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${getCoingeckoId(symbol)}&vs_currencies=usd`);
+                const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${getCoingeckoId(symbol)}&vs_currencies=usd,gbp`);
                 const data = await response.json();
                 const coinId = getCoingeckoId(symbol);
                 
-                if (data[coinId] && data[coinId].usd) {
-                    const price = data[coinId].usd;
-                    document.getElementById('tokenPrice').value = price;
+                if (data[coinId] && data[coinId].usd && data[coinId].gbp) {
+                    const priceUSD = data[coinId].usd;
+                    const priceGBP = data[coinId].gbp;
+                    document.getElementById('tokenPrice').value = `${priceUSD} / £${priceGBP}`;
+                    
+                    // Store USD price for calculations
+                    document.getElementById('tokenPrice').dataset.usdPrice = priceUSD;
                     calculateTokens();
                 } else {
                     document.getElementById('tokenPrice').value = '';
@@ -340,10 +344,10 @@
         
         function calculateTokens() {
             const usdAmount = parseFloat(document.getElementById('usdAmount').value);
-            const tokenPrice = parseFloat(document.getElementById('tokenPrice').value);
+            const tokenPriceUSD = parseFloat(document.getElementById('tokenPrice').dataset.usdPrice);
             
-            if (usdAmount && tokenPrice && tokenPrice > 0) {
-                const tokens = usdAmount / tokenPrice;
+            if (usdAmount && tokenPriceUSD && tokenPriceUSD > 0) {
+                const tokens = usdAmount / tokenPriceUSD;
                 document.getElementById('tokensReceived').value = tokens.toFixed(6);
             } else {
                 document.getElementById('tokensReceived').value = '';
